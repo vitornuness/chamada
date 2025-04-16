@@ -1,0 +1,53 @@
+import 'package:flutter/material.dart';
+
+class PainelAdministradorView extends StatefulWidget {
+  const PainelAdministradorView({super.key});
+
+  @override
+  State<PainelAdministradorView> createState() =>
+      _PainelAdministradorViewState();
+}
+
+class _PainelAdministradorViewState extends State<PainelAdministradorView> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Painel Administrador'),
+        centerTitle: true,
+      ),
+      body: Center(
+        child: Padding(
+          padding: EdgeInsets.all(20.0),
+          child: Column(
+            children: [
+              OutlinedButton(
+                style: OutlinedButton.styleFrom(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                  ),
+                  side: BorderSide(width: 1.2),
+                  minimumSize: Size(400, 100),
+                ),
+                onPressed: () => {},
+                child: const Text('Alunos'),
+              ),
+              SizedBox(height: 32.0),
+              OutlinedButton(
+                style: OutlinedButton.styleFrom(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                  ),
+                  side: BorderSide(width: 1.2),
+                  minimumSize: Size(400, 100),
+                ),
+                onPressed: () => {},
+                child: const Text('Salas'),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
