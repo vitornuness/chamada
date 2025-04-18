@@ -1,5 +1,7 @@
-import 'package:chamada/ui/view/justificativa_view.dart';
+import 'package:chamada/data/model/aluno.dart';
+import 'package:chamada/router.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class ChamadaView extends StatefulWidget {
   const ChamadaView({super.key});
@@ -9,6 +11,8 @@ class ChamadaView extends StatefulWidget {
 }
 
 class _ChamadaViewState extends State<ChamadaView> {
+  final aluno = Aluno('Vitor', null, 1, 5);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -17,14 +21,22 @@ class _ChamadaViewState extends State<ChamadaView> {
         centerTitle: true,
         actions: [
           IconButton(
-            icon: const Icon(
-              Icons.signal_wifi_statusbar_connected_no_internet_4,
+            icon: Icon(
+              aluno.aparelho != null
+                  ? Icons.signal_wifi_statusbar_connected_no_internet_4
+                  : Icons.security_update_warning,
             ),
             tooltip: 'Dispositivo desconectado',
             onPressed: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Você deve ir para a sala 000.')),
-              );
+              if (aluno.aparelho != null) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Você deve ir para a sala 000.'),
+                  ),
+                );
+              } else {
+                context.go(AppRouter.cadastrarAparelho);
+              }
             },
           ),
         ],
@@ -49,12 +61,7 @@ class _ChamadaViewState extends State<ChamadaView> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const JustificativaView()),
-          );
-        },
+        onPressed: () => context.go(AppRouter.justificativa),
         child: const Icon(Icons.edit_note_rounded),
       ),
     );

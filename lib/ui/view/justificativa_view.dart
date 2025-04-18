@@ -1,4 +1,6 @@
+import 'package:chamada/router.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class JustificativaView extends StatefulWidget {
   const JustificativaView({super.key});
@@ -9,6 +11,7 @@ class JustificativaView extends StatefulWidget {
 
 class _JustificativaViewState extends State<JustificativaView> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  var isConnected = false;
 
   @override
   Widget build(BuildContext context) {
@@ -16,19 +19,11 @@ class _JustificativaViewState extends State<JustificativaView> {
       appBar: AppBar(
         title: const Text('Chamada'),
         centerTitle: true,
-        actions: [
-          IconButton(
-            icon: const Icon(
-              Icons.signal_wifi_statusbar_connected_no_internet_4,
-            ),
-            tooltip: 'Dispositivo desconectado',
-            onPressed: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Você deve ir para a sala 000.')),
-              );
-            },
-          ),
-        ],
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          tooltip: 'Voltar para a chamada',
+          onPressed: () => context.go(AppRouter.chamada),
+        ),
       ),
       body: Center(
         child: SizedBox(
@@ -70,9 +65,7 @@ class _JustificativaViewState extends State<JustificativaView> {
                 ),
                 SizedBox(height: 64.0),
                 FilledButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
+                  onPressed: () => context.go(AppRouter.chamada),
                   child: const Text('Enviar'),
                 ),
                 Spacer(),
