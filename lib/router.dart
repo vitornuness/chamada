@@ -57,7 +57,9 @@ class AppRouter {
       ),
       GoRoute(
         path: AppRouter.listaAlunos,
-        builder: (context, state) => ListaAlunosView(),
+        builder:
+            (context, state) =>
+                ListaAlunosView(state.uri.queryParameters['turmaId']),
       ),
       GoRoute(
         path: AppRouter.cadastrarSalas,
