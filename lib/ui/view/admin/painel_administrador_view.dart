@@ -1,4 +1,6 @@
+import 'package:chamada/router.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class PainelAdministradorView extends StatefulWidget {
   const PainelAdministradorView({super.key});
@@ -29,7 +31,7 @@ class _PainelAdministradorViewState extends State<PainelAdministradorView> {
                   side: BorderSide(width: 1.2),
                   minimumSize: Size(400, 100),
                 ),
-                onPressed: () => {},
+                onPressed: () => context.go(AppRouter.listaTurmas),
                 child: const Text('Alunos'),
               ),
               SizedBox(height: 32.0),
@@ -41,7 +43,7 @@ class _PainelAdministradorViewState extends State<PainelAdministradorView> {
                   side: BorderSide(width: 1.2),
                   minimumSize: Size(400, 100),
                 ),
-                onPressed: () => {},
+                onPressed: () => context.go(AppRouter.listaSalas),
                 child: const Text('Salas'),
               ),
             ],
