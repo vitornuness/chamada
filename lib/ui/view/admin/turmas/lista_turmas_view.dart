@@ -27,46 +27,46 @@ class _ListaTurmasViewState extends State<ListaTurmasView> {
       body: ListView.builder(
         itemCount: turmas.length,
         itemBuilder: (context, index) {
-          return Container(
-            padding: EdgeInsets.all(4.0),
-            height: 80.0,
-            child: Center(
-              child: SizedBox(
-                width: 400.0,
-                child: Container(
-                  padding: EdgeInsets.all(16.0),
-                  decoration: BoxDecoration(
-                    border: Border.all(width: 1.2, color: Colors.grey),
-                    borderRadius: BorderRadius.all(Radius.circular(8.0)),
+          final turma = turmas[index];
+          return Center(
+            child: ConstrainedBox(
+              constraints: BoxConstraints(maxWidth: 1200.0),
+              child: Card(
+                margin: EdgeInsets.symmetric(vertical: 6.0, horizontal: 8.0),
+                elevation: 2,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: ListTile(
+                  contentPadding: EdgeInsets.symmetric(
+                    horizontal: 16.0,
+                    vertical: 8.0,
                   ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  title: Text(
+                    'Turma $turma',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  trailing: Wrap(
+                    spacing: 8,
                     children: [
-                      Text('Turma ${turmas[index]}'),
-                      Row(
-                        children: [
-                          IconButton(
-                            icon: Icon(Icons.edit),
-                            tooltip: 'Editar',
-                            onPressed: () {
-                              context.go(
-                                AppRouter.editarTurmas.replaceAll(
-                                  ':id',
-                                  index.toString(),
-                                ),
-                              );
-                            },
-                          ),
-                          IconButton(
-                            icon: Icon(Icons.group),
-                            tooltip: 'Alunos',
-                            onPressed: () {
-                              context.go(
-                                '${AppRouter.listaAlunos}?turmaId=$index',
-                              );
-                            },
-                          ),
-                        ],
+                      IconButton(
+                        icon: Icon(Icons.edit),
+                        tooltip: 'Editar',
+                        onPressed: () {
+                          context.go(
+                            AppRouter.editarTurmas.replaceAll(
+                              ':id',
+                              index.toString(),
+                            ),
+                          );
+                        },
+                      ),
+                      IconButton(
+                        icon: Icon(Icons.group),
+                        tooltip: 'Alunos',
+                        onPressed: () {
+                          context.go('${AppRouter.listaAlunos}?turmaId=$index');
+                        },
                       ),
                     ],
                   ),

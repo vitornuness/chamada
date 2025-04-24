@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
 class AuthService extends ChangeNotifier {
-  bool isAuthenticated = true;
-  bool isAdmin = true;
+  bool isAuthenticated = false;
+  bool isAdmin = false;
 
   Future<bool> login(String usuario, String senha) async {
     if (usuario.isNotEmpty || senha.length > 5) {

@@ -32,7 +32,6 @@ class _JustificativaViewState extends State<JustificativaView> {
             key: _formKey,
             child: Column(
               children: [
-                Spacer(),
                 Text(
                   'Selecione abaixo, as aulas que deseja enviar sua justificativa:',
                   style: TextStyle(fontSize: 20.0),
@@ -68,7 +67,6 @@ class _JustificativaViewState extends State<JustificativaView> {
                   onPressed: () => context.go(AppRouter.chamada),
                   child: const Text('Enviar'),
                 ),
-                Spacer(),
               ],
             ),
           ),

@@ -1,48 +1,56 @@
-import 'package:chamada/data/model/sala.dart';
-import 'package:chamada/data/service/sala_service.dart';
+import 'package:chamada/data/model/reserva.dart';
 import 'package:chamada/router.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:provider/provider.dart';
 
-class ListaSalasView extends StatefulWidget {
-  const ListaSalasView({super.key});
+class ReservasView extends StatefulWidget {
+  final String? salaId;
+
+  const ReservasView(this.salaId, {super.key});
 
   @override
-  State<ListaSalasView> createState() => _ListaSalasViewState();
+  State<ReservasView> createState() => _ReservasViewState();
 }
 
-class _ListaSalasViewState extends State<ListaSalasView> {
-  late SalaService _salaService;
-  late List<Sala> _salas = [];
+class _ReservasViewState extends State<ReservasView> {
+  final reservas = [
+    Reserva('19:20', '21:00', 'SEGUNDA', null, 'Lógica de Programação', 1, 1),
+    Reserva('21:20', '23:00', 'SEGUNDA', null, 'Banco de Dados', 1, 1),
+    Reserva('19:20', '21:00', 'TERÇA', null, 'Lógica de Programação', 1, 1),
+    Reserva('21:20', '23:00', 'TERÇA', null, 'Banco de Dados', 1, 1),
+  ];
+
+  late List<Reserva> reservasExibidas = [];
+
+  List<Reserva> _listarReservasPorSala(int salaId) {
+    return reservas.where((reserva) => reserva.salaId == salaId).toList();
+  }
 
   @override
   void initState() {
     super.initState();
-
-    _salaService = context.read<SalaService>();
-    _salas = _salaService.listarTodas();
+    reservasExibidas =
+        widget.salaId == null || widget.salaId!.isEmpty
+            ? reservas
+            : _listarReservasPorSala(int.parse(widget.salaId!));
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Salas'),
+        title: Text('Reservas'),
         centerTitle: true,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
-          onPressed:
-              () =>
-                  context.canPop()
-                      ? context.pop()
-                      : context.go(AppRouter.painelAdmin),
+          tooltip: 'Voltar para lista de salas',
+          onPressed: () => context.go(AppRouter.listaSalas),
         ),
       ),
       body: ListView.builder(
-        itemCount: _salas.length,
+        itemCount: reservasExibidas.length,
         itemBuilder: (context, index) {
-          final sala = _salas[index];
+          final reserva = reservasExibidas[index];
           return Center(
             child: ConstrainedBox(
               constraints: BoxConstraints(maxWidth: 1200.0),
@@ -58,9 +66,10 @@ class _ListaSalasViewState extends State<ListaSalasView> {
                     vertical: 8.0,
                   ),
                   title: Text(
-                    'Sala ${sala.codigo}',
+                    '${reserva.diaSemana ?? reserva.data} [${reserva.inicio} - ${reserva.fim}]',
                     style: TextStyle(fontWeight: FontWeight.bold),
                   ),
+                  subtitle: Text(reserva.curso),
                   trailing: Wrap(
                     spacing: 8,
                     children: [
@@ -69,17 +78,17 @@ class _ListaSalasViewState extends State<ListaSalasView> {
                         tooltip: 'Editar',
                         onPressed:
                             () => context.go(
-                              AppRouter.editarSalas.replaceAll(
+                              AppRouter.editarReservas.replaceAll(
                                 ':id',
                                 index.toString(),
                               ),
                             ),
                       ),
                       IconButton(
-                        icon: Icon(Icons.alarm),
-                        tooltip: 'Reservas',
+                        icon: Icon(Icons.delete),
+                        tooltip: 'Excluir',
                         onPressed: () {
-                          context.go('${AppRouter.reservas}?salaId=$index');
+                          context.go(AppRouter.listaSalas);
                         },
                       ),
                     ],
@@ -91,7 +100,7 @@ class _ListaSalasViewState extends State<ListaSalasView> {
         },
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => context.go(AppRouter.cadastrarSalas),
+        onPressed: () => context.go(AppRouter.cadastrarReservas),
         child: const Icon(Icons.add),
       ),
     );

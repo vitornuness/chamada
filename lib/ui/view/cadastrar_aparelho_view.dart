@@ -31,7 +31,6 @@ class _CadastrarAparelhoViewState extends State<CadastrarAparelhoView> {
             key: _formKey,
             child: Column(
               children: [
-                Spacer(),
                 Text(
                   'Informe o endereço MAC do seu aparelho:',
                   style: TextStyle(fontSize: 20.0),
@@ -44,11 +43,28 @@ class _CadastrarAparelhoViewState extends State<CadastrarAparelhoView> {
                   ),
                 ),
                 SizedBox(height: 64.0),
-                FilledButton(
-                  onPressed: () => context.go(AppRouter.chamada),
-                  child: const Text('Enviar'),
+
+                Row(
+                  spacing: 12.0,
+                  children: [
+                    Expanded(
+                      child: OutlinedButton(
+                        onPressed:
+                            () =>
+                                context.canPop()
+                                    ? context.pop()
+                                    : context.go(AppRouter.reservas),
+                        child: const Text('Cancelar'),
+                      ),
+                    ),
+                    Expanded(
+                      child: FilledButton(
+                        onPressed: () => context.go(AppRouter.chamada),
+                        child: const Text('Salvar'),
+                      ),
+                    ),
+                  ],
                 ),
-                Spacer(),
               ],
             ),
           ),

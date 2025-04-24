@@ -1,8 +1,11 @@
 import 'package:chamada/ui/view/admin/alunos/cadastrar_alunos_view.dart';
 import 'package:chamada/ui/view/admin/alunos/lista_alunos_view.dart';
+import 'package:chamada/ui/view/admin/chamada_administrador_view.dart';
+import 'package:chamada/ui/view/admin/justificativas_administrador_view.dart';
 import 'package:chamada/ui/view/admin/painel_administrador_view.dart';
-import 'package:chamada/ui/view/admin/salas/cadastrar_salas_view.dart';
-import 'package:chamada/ui/view/admin/salas/editar_salas_view.dart';
+import 'package:chamada/ui/view/admin/reservas/formulario_reservas_view.dart';
+import 'package:chamada/ui/view/admin/salas/formulario_salas_view.dart';
+import 'package:chamada/ui/view/admin/reservas/reservas_view.dart';
 import 'package:chamada/ui/view/admin/salas/lista_salas_view.dart';
 import 'package:chamada/ui/view/admin/turmas/cadastrar_turmas_view.dart';
 import 'package:chamada/ui/view/admin/turmas/editar_turmas_view.dart';
@@ -25,8 +28,13 @@ class AppRouter {
   static const String cadastrarAparelho = '/aparelho/cadastro';
 
   static const String painelAdmin = '/admin/painel';
+  static const String chamadaAdmin = '/admin/chamada';
+  static const String justificativasAdmin = '/admin/justificativas';
   static const String cadastrarAlunos = '/admin/alunos/cadastro';
   static const String listaAlunos = '/admin/alunos';
+  static const String cadastrarReservas = '/admin/reservas/cadastro';
+  static const String editarReservas = '/admin/reservas/:id/editar';
+  static const String reservas = '/admin/reservas';
   static const String cadastrarSalas = '/admin/salas/cadastro';
   static const String editarSalas = '/admin/salas/:id/editar';
   static const String listaSalas = '/admin/salas';
@@ -62,13 +70,30 @@ class AppRouter {
                 ListaAlunosView(state.uri.queryParameters['turmaId']),
       ),
       GoRoute(
+        path: AppRouter.cadastrarReservas,
+        builder: (context, state) => FormularioReservasView(null),
+      ),
+      GoRoute(
+        path: AppRouter.editarReservas,
+        builder:
+            (context, state) =>
+                FormularioReservasView(state.pathParameters['id']!),
+      ),
+      GoRoute(
+        path: AppRouter.reservas,
+        builder:
+            (context, state) =>
+                ReservasView(state.uri.queryParameters['salaId']),
+      ),
+      GoRoute(
         path: AppRouter.cadastrarSalas,
-        builder: (context, state) => CadastrarSalasView(),
+        builder: (context, state) => FormularioSalasView(null),
       ),
       GoRoute(
         path: AppRouter.editarSalas,
         builder:
-            (context, state) => EditarSalasView(state.pathParameters['id']!),
+            (context, state) =>
+                FormularioSalasView(state.pathParameters['id']!),
       ),
       GoRoute(
         path: AppRouter.listaSalas,
@@ -91,6 +116,14 @@ class AppRouter {
         path: AppRouter.painelAdmin,
         builder: (context, state) => PainelAdministradorView(),
       ),
+      GoRoute(
+        path: AppRouter.chamadaAdmin,
+        builder: (context, state) => ChamadaAdministradorView(),
+      ),
+      GoRoute(
+        path: AppRouter.justificativasAdmin,
+        builder: (context, state) => JustificativasAdministradorView(),
+      ),
     ],
     redirect: (context, state) {
       final isAuthenticated = context.read<AuthService>().isAuthenticated;
@@ -99,6 +132,8 @@ class AppRouter {
       final publicRoutes = [AppRouter.splash, AppRouter.login];
       final adminRoutes = [
         AppRouter.painelAdmin,
+        AppRouter.chamadaAdmin,
+        AppRouter.justificativasAdmin,
         AppRouter.cadastrarAlunos,
         AppRouter.listaAlunos,
         AppRouter.cadastrarSalas,

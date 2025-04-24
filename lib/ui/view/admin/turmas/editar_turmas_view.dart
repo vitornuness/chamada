@@ -52,10 +52,6 @@ class _EditarTurmasViewState extends State<EditarTurmasView> {
           ),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => context.go(AppRouter.cadastrarSalas),
-        child: const Icon(Icons.add),
-      ),
     );
   }
 }

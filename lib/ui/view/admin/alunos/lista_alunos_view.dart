@@ -50,20 +50,43 @@ class _ListaAlunosViewState extends State<ListaAlunosView> {
       body: ListView.builder(
         itemCount: alunosExibidos.length,
         itemBuilder: (context, index) {
-          return Container(
-            padding: EdgeInsets.all(4.0),
-            height: 80.0,
-            child: Center(
-              child: OutlinedButton(
-                style: OutlinedButton.styleFrom(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(8.0)),
-                  ),
-                  side: BorderSide(width: 1.2),
-                  minimumSize: Size(400, 100),
+          final aluno = alunosExibidos[index];
+          return Center(
+            child: ConstrainedBox(
+              constraints: BoxConstraints(maxWidth: 1200.0),
+              child: Card(
+                margin: EdgeInsets.symmetric(vertical: 6.0, horizontal: 8.0),
+                elevation: 2,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
                 ),
-                onPressed: () => {},
-                child: Text(alunosExibidos[index].nome),
+                child: ListTile(
+                  contentPadding: EdgeInsets.symmetric(
+                    horizontal: 16.0,
+                    vertical: 8.0,
+                  ),
+                  title: Text(
+                    aluno.nome,
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  trailing: Wrap(
+                    spacing: 8,
+                    children: [
+                      IconButton(
+                        icon: Icon(Icons.edit),
+                        tooltip: 'Editar',
+                        onPressed: () => context.go(AppRouter.listaTurmas),
+                      ),
+                      IconButton(
+                        icon: Icon(Icons.delete),
+                        tooltip: 'Excluir',
+                        onPressed: () {
+                          context.go(AppRouter.listaTurmas);
+                        },
+                      ),
+                    ],
+                  ),
+                ),
               ),
             ),
           );

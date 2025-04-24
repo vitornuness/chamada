@@ -5,6 +5,7 @@ class Reserva {
   final String? data;
   final String curso;
   final int salaId;
+  final int turmaId;
 
   const Reserva(
     this.inicio,
@@ -13,5 +14,6 @@ class Reserva {
     this.data,
     this.curso,
     this.salaId,
+    this.turmaId,
   );
 }

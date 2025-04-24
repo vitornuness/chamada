@@ -1,6 +1,5 @@
 import 'package:chamada/data/service/auth_service.dart';
 import 'package:chamada/router.dart';
-import 'package:chamada/ui/view/chamada_view.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';

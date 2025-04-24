@@ -1,5 +1,5 @@
 class Sala {
-  final String codigo;
+  String codigo;
 
-  const Sala(this.codigo);
+  Sala(this.codigo);
 }
