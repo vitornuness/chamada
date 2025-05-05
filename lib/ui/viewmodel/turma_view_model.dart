@@ -2,7 +2,11 @@ import 'package:chamada/data/model/turma.dart';
 import 'package:flutter/material.dart';
 
 class TurmaViewModel extends ChangeNotifier {
-  final List<Turma> _listaTurmas = [];
+  final List<Turma> _listaTurmas = [
+    Turma(id: 1, codigo: 'A'),
+    Turma(id: 2, codigo: 'B'),
+    Turma(id: 3, codigo: 'C'),
+  ];
 
   List<Turma> get getListaTurmas {
     return List<Turma>.from(_listaTurmas)

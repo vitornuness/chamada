@@ -3,11 +3,26 @@ import 'package:flutter/material.dart';
 
 class AlunoViewModel extends ChangeNotifier {
   final List<Aluno> _listaAlunos = [
-    Aluno(id: 1, codigoRegistro: '123456', turmaId: 1, usuarioId: 2),
+    Aluno(
+      id: 1,
+      codigoRegistro: '123456',
+      nome: 'Vitor',
+      turmaId: 1,
+      usuarioId: 2,
+    ),
+    Aluno(
+      id: 2,
+      codigoRegistro: '654321',
+      nome: 'Maycon',
+      turmaId: 1,
+      usuarioId: 3,
+      aparelho: 'APARELHODOMAYCON',
+    ),
   ];
   Aluno? _alunoAutenticado;
 
   List<Aluno> get getListaAlunos => _listaAlunos;
+  Aluno? get getAlunoAutenticado => _alunoAutenticado;
 
   void adicionarAluno(Aluno aluno) {
     if (findAluno(aluno.id) != null) {
@@ -18,11 +33,19 @@ class AlunoViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  void autenticarAluno(int usuarioId) {
+    _alunoAutenticado = findAlunoByUsuario(usuarioId);
+  }
+
   Aluno? findAluno(int id) {
     return _listaAlunos.where((a) => a.id == id).firstOrNull;
   }
 
-  Aluno? getAlunoAutenticado(int usuarioId) {
+  Aluno? findAlunoByUsuario(int usuarioId) {
+    return _listaAlunos.where((a) => a.usuarioId == usuarioId).firstOrNull;
+  }
+
+  Aluno? getAlunoAutenticadoByUsuario(int usuarioId) {
     return _alunoAutenticado?.usuarioId == usuarioId
         ? _alunoAutenticado
         : _listaAlunos.where((a) => a.usuarioId == usuarioId).firstOrNull;

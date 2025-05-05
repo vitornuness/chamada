@@ -1,6 +1,5 @@
-import 'package:chamada/data/model/sala.dart';
-import 'package:chamada/data/service/sala_service.dart';
 import 'package:chamada/router.dart';
+import 'package:chamada/ui/viewmodel/sala_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
@@ -13,17 +12,6 @@ class ListaSalasView extends StatefulWidget {
 }
 
 class _ListaSalasViewState extends State<ListaSalasView> {
-  late SalaService _salaService;
-  late List<Sala> _salas = [];
-
-  @override
-  void initState() {
-    super.initState();
-
-    _salaService = context.read<SalaService>();
-    _salas = _salaService.listarTodas();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -39,54 +27,63 @@ class _ListaSalasViewState extends State<ListaSalasView> {
                       : context.go(AppRouter.painelAdmin),
         ),
       ),
-      body: ListView.builder(
-        itemCount: _salas.length,
-        itemBuilder: (context, index) {
-          final sala = _salas[index];
-          return Center(
-            child: ConstrainedBox(
-              constraints: BoxConstraints(maxWidth: 1200.0),
-              child: Card(
-                margin: EdgeInsets.symmetric(vertical: 6.0, horizontal: 8.0),
-                elevation: 2,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: ListTile(
-                  contentPadding: EdgeInsets.symmetric(
-                    horizontal: 16.0,
-                    vertical: 8.0,
-                  ),
-                  title: Text(
-                    'Sala ${sala.codigo}',
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  trailing: Wrap(
-                    spacing: 8,
-                    children: [
-                      IconButton(
-                        icon: Icon(Icons.edit),
-                        tooltip: 'Editar',
-                        onPressed:
-                            () => context.go(
-                              AppRouter.editarSalas.replaceAll(
-                                ':id',
-                                index.toString(),
-                              ),
-                            ),
+      body: Consumer<SalaViewModel>(
+        builder: (context, salaViewModel, child) {
+          return ListView.builder(
+            itemCount: salaViewModel.getListaSalas.length,
+            itemBuilder: (context, index) {
+              final sala = salaViewModel.getListaSalas[index];
+              return Center(
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(maxWidth: 1200.0),
+                  child: Card(
+                    margin: EdgeInsets.symmetric(
+                      vertical: 6.0,
+                      horizontal: 8.0,
+                    ),
+                    elevation: 2,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: ListTile(
+                      contentPadding: EdgeInsets.symmetric(
+                        horizontal: 16.0,
+                        vertical: 8.0,
                       ),
-                      IconButton(
-                        icon: Icon(Icons.alarm),
-                        tooltip: 'Reservas',
-                        onPressed: () {
-                          context.go('${AppRouter.reservas}?salaId=$index');
-                        },
+                      title: Text(
+                        'Sala ${sala.codigo}',
+                        style: TextStyle(fontWeight: FontWeight.bold),
                       ),
-                    ],
+                      trailing: Wrap(
+                        spacing: 8,
+                        children: [
+                          IconButton(
+                            icon: Icon(Icons.edit),
+                            tooltip: 'Editar',
+                            onPressed:
+                                () => context.go(
+                                  AppRouter.editarSalas.replaceAll(
+                                    ':id',
+                                    sala.id.toString(),
+                                  ),
+                                ),
+                          ),
+                          IconButton(
+                            icon: Icon(Icons.alarm),
+                            tooltip: 'Reservas',
+                            onPressed: () {
+                              context.go(
+                                '${AppRouter.reservas}?salaId=${sala.id}',
+                              );
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
                 ),
-              ),
-            ),
+              );
+            },
           );
         },
       ),

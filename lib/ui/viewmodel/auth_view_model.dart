@@ -14,7 +14,14 @@ class AuthViewModel extends ChangeNotifier {
       id: 2,
       usuario: '123456',
       senha: 'aluno123456',
-      nome: 'Aluno',
+      nome: 'Vitor',
+      ehAdmin: false,
+    ),
+    Usuario(
+      id: 3,
+      usuario: '654321',
+      senha: 'aluno654321',
+      nome: 'Maycon',
       ehAdmin: false,
     ),
   ];

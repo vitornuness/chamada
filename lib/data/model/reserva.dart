@@ -1,3 +1,5 @@
+import 'package:chamada/shared/dia_semana_enum.dart';
+
 class Reserva {
   final int id;
   final String inicio;
@@ -5,7 +7,8 @@ class Reserva {
   final String curso;
   final int salaId;
   final int turmaId;
-  final String? diaSemana;
+  final int usuarioId;
+  final DiaSemanaEnum? diaSemana;
   final String? data;
 
   Reserva({
@@ -15,6 +18,7 @@ class Reserva {
     required this.curso,
     required this.salaId,
     required this.turmaId,
+    required this.usuarioId,
     this.diaSemana,
     this.data,
   });
@@ -26,7 +30,8 @@ class Reserva {
     String? curso,
     int? salaId,
     int? turmaId,
-    String? diaSemana,
+    int? usuarioId,
+    DiaSemanaEnum? diaSemana,
     String? data,
   }) {
     return Reserva(
@@ -36,6 +41,9 @@ class Reserva {
       curso: curso ?? this.curso,
       salaId: salaId ?? this.salaId,
       turmaId: turmaId ?? this.turmaId,
+      usuarioId: usuarioId ?? this.usuarioId,
+      diaSemana: diaSemana ?? this.diaSemana,
+      data: data ?? this.data,
     );
   }
 }

@@ -1,36 +1,45 @@
-import 'package:chamada/data/model/turma.dart';
 import 'package:chamada/router.dart';
-import 'package:chamada/ui/viewmodel/turma_view_model.dart';
+import 'package:chamada/ui/viewmodel/aluno_view_model.dart';
+import 'package:chamada/ui/viewmodel/registro_view_model.dart';
+import 'package:chamada/ui/viewmodel/reserva_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
-class ListaTurmasView extends StatefulWidget {
-  const ListaTurmasView({super.key});
+class ChamadaAdministradorView extends StatelessWidget {
+  final String turmaId;
 
-  @override
-  State<ListaTurmasView> createState() => _ListaTurmasViewState();
-}
+  const ChamadaAdministradorView(this.turmaId, {super.key});
 
-class _ListaTurmasViewState extends State<ListaTurmasView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Turmas'),
+        title: const Text('Chamada'),
         centerTitle: true,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
-          tooltip: 'Voltar para o painel administrador',
-          onPressed: () => context.go(AppRouter.painelAdmin),
+          tooltip: 'Voltar para lista de turmas',
+          onPressed: () => context.go(AppRouter.listaTurmas),
         ),
       ),
-      body: Consumer<TurmaViewModel>(
-        builder: (context, turmaViewModel, child) {
+      body: Consumer<RegistroViewModel>(
+        builder: (context, registroViewModel, child) {
+          final reserva = context
+              .read<ReservaViewModel>()
+              .getListaReservasDoDiaPorTurma(int.parse(turmaId));
           return ListView.builder(
-            itemCount: turmaViewModel.getListaTurmas.length,
+            itemCount:
+                registroViewModel
+                    .getRegistrosAtuaisByReserva(reserva[0].id)
+                    .length,
             itemBuilder: (context, index) {
-              final Turma turma = turmaViewModel.getListaTurmas[index];
+              final registro =
+                  registroViewModel.getRegistrosAtuaisByReserva(
+                    reserva[0].id,
+                  )[index];
+              final aluno =
+                  context.read<AlunoViewModel>().findAluno(registro.alunoId)!;
               return Center(
                 child: ConstrainedBox(
                   constraints: BoxConstraints(maxWidth: 1200.0),
@@ -49,40 +58,25 @@ class _ListaTurmasViewState extends State<ListaTurmasView> {
                         vertical: 8.0,
                       ),
                       title: Text(
-                        'Turma ${turma.codigo}',
+                        aluno.nome,
                         style: TextStyle(fontWeight: FontWeight.bold),
                       ),
+                      subtitle: Text(aluno.codigoRegistro),
                       trailing: Wrap(
                         spacing: 8,
                         children: [
                           IconButton(
-                            icon: Icon(Icons.edit),
-                            tooltip: 'Editar',
+                            icon: Icon(Icons.check),
+                            tooltip: 'Marcar presença',
                             onPressed: () {
-                              context.go(
-                                AppRouter.editarTurmas.replaceAll(
-                                  ':id',
-                                  turma.id.toString(),
-                                ),
-                              );
+                              // TODO
                             },
                           ),
                           IconButton(
-                            icon: Icon(Icons.group),
-                            tooltip: 'Alunos',
+                            icon: Icon(Icons.close),
+                            tooltip: 'Marcar falta',
                             onPressed: () {
-                              context.go(
-                                '${AppRouter.listaAlunos}?turmaId=${turma.id}',
-                              );
-                            },
-                          ),
-                          IconButton(
-                            icon: Icon(Icons.checklist_rounded),
-                            tooltip: 'Chamada',
-                            onPressed: () {
-                              context.go(
-                                '${AppRouter.chamadaAdmin}?turmaId=${turma.id}',
-                              );
+                              // TODO
                             },
                           ),
                         ],
@@ -95,10 +89,9 @@ class _ListaTurmasViewState extends State<ListaTurmasView> {
           );
         },
       ),
-
       floatingActionButton: FloatingActionButton(
-        onPressed: () => context.go(AppRouter.cadastrarTurmas),
-        child: const Icon(Icons.add),
+        onPressed: () => context.go(AppRouter.cadastrarAlunos),
+        child: const Icon(Icons.checklist_rounded),
       ),
     );
   }

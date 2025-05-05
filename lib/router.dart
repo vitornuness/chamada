@@ -1,6 +1,6 @@
 import 'package:chamada/ui/view/admin/alunos/cadastrar_alunos_view.dart';
 import 'package:chamada/ui/view/admin/alunos/lista_alunos_view.dart';
-import 'package:chamada/ui/view/admin/chamada_administrador_view.dart';
+import 'package:chamada/ui/view/admin/turmas/chamada_administrador_view.dart';
 import 'package:chamada/ui/view/admin/justificativas_administrador_view.dart';
 import 'package:chamada/ui/view/admin/painel_administrador_view.dart';
 import 'package:chamada/ui/view/admin/reservas/formulario_reservas_view.dart';
@@ -12,9 +12,9 @@ import 'package:chamada/ui/view/admin/turmas/editar_turmas_view.dart';
 import 'package:chamada/ui/view/admin/turmas/lista_turmas_view.dart';
 import 'package:chamada/ui/view/cadastrar_aparelho_view.dart';
 import 'package:chamada/ui/view/justificativa_view.dart';
+import 'package:chamada/ui/viewmodel/auth_view_model.dart';
 import 'package:go_router/go_router.dart';
 
-import 'package:chamada/data/service/auth_service.dart';
 import 'package:chamada/ui/view/auth_view.dart';
 import 'package:chamada/ui/view/chamada_view.dart';
 import 'package:provider/provider.dart';
@@ -118,7 +118,9 @@ class AppRouter {
       ),
       GoRoute(
         path: AppRouter.chamadaAdmin,
-        builder: (context, state) => ChamadaAdministradorView(),
+        builder:
+            (context, state) =>
+                ChamadaAdministradorView(state.uri.queryParameters['turmaId']!),
       ),
       GoRoute(
         path: AppRouter.justificativasAdmin,
@@ -126,8 +128,10 @@ class AppRouter {
       ),
     ],
     redirect: (context, state) {
-      final isAuthenticated = context.read<AuthService>().isAuthenticated;
-      final isAdmin = context.read<AuthService>().isAdmin;
+      final isAuthenticated =
+          context.read<AuthViewModel>().getUsuarioAutenticado != null;
+      final isAdmin =
+          context.read<AuthViewModel>().getUsuarioAutenticado?.ehAdmin ?? false;
 
       final publicRoutes = [AppRouter.splash, AppRouter.login];
       final adminRoutes = [

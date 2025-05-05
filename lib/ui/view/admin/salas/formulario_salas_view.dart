@@ -1,8 +1,6 @@
-import 'package:chamada/data/service/sala_service.dart';
 import 'package:chamada/router.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:provider/provider.dart';
 
 class FormularioSalasView extends StatefulWidget {
   final String? id;
@@ -24,11 +22,11 @@ class _FormularioSalasViewState extends State<FormularioSalasView> {
   }
 
   Future<void> _criarSala(String codigo) async {
-    await context.read<SalaService>().criar(_codigoController.text);
+    // TODO
   }
 
   Future<void> _editarSala(int id, String codigo) async {
-    await context.read<SalaService>().editar(id, _codigoController.text);
+    // TODO
   }
 
   Future<void> _salvar() async {

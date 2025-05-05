@@ -2,7 +2,11 @@ import 'package:chamada/data/model/sala.dart';
 import 'package:flutter/material.dart';
 
 class SalaViewModel extends ChangeNotifier {
-  final List<Sala> _listaSalas = [];
+  final List<Sala> _listaSalas = [
+    Sala(id: 1, codigo: '428'),
+    Sala(id: 2, codigo: '429'),
+    Sala(id: 3, codigo: '430'),
+  ];
 
   List<Sala> get getListaSalas {
     return List<Sala>.from(_listaSalas)

@@ -74,11 +74,7 @@ class _FormularioReservasViewState extends State<FormularioReservasView> {
         centerTitle: true,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
-          onPressed:
-              () =>
-                  context.canPop()
-                      ? context.pop()
-                      : context.go(AppRouter.reservas),
+          onPressed: () => context.go(AppRouter.listaSalas),
         ),
       ),
       body: Center(
@@ -142,7 +138,7 @@ class _FormularioReservasViewState extends State<FormularioReservasView> {
                               initialTime: TimeOfDay.now(),
                             );
                             setState(() {
-                              _inicioController.text =
+                              _terminoController.text =
                                   hora != null
                                       ? hora.format(context).split(' ')[0]
                                       : '';

@@ -1,5 +1,6 @@
-import 'package:chamada/data/service/auth_service.dart';
 import 'package:chamada/router.dart';
+import 'package:chamada/ui/viewmodel/aluno_view_model.dart';
+import 'package:chamada/ui/viewmodel/auth_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
@@ -32,12 +33,17 @@ class _AuthViewState extends State<AuthView> {
       });
 
       try {
-        final sucesso = await context.read<AuthService>().login(
+        final sucesso = await context.read<AuthViewModel>().login(
           _usuarioController.text,
           _senhaController.text,
         );
 
         if (sucesso) {
+          var usuarioAutenticado =
+              context.read<AuthViewModel>().getUsuarioAutenticado;
+          context.read<AlunoViewModel>().autenticarAluno(
+            usuarioAutenticado!.id,
+          );
           context.go(AppRouter.chamada);
         } else {
           ScaffoldMessenger.of(context).showSnackBar(

@@ -1,7 +1,8 @@
-import 'package:chamada/data/model/reserva.dart';
 import 'package:chamada/router.dart';
+import 'package:chamada/ui/viewmodel/reserva_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 
 class ReservasView extends StatefulWidget {
   final String? salaId;
@@ -13,28 +14,6 @@ class ReservasView extends StatefulWidget {
 }
 
 class _ReservasViewState extends State<ReservasView> {
-  final reservas = [
-    Reserva('19:20', '21:00', 'SEGUNDA', null, 'Lógica de Programação', 1, 1),
-    Reserva('21:20', '23:00', 'SEGUNDA', null, 'Banco de Dados', 1, 1),
-    Reserva('19:20', '21:00', 'TERÇA', null, 'Lógica de Programação', 1, 1),
-    Reserva('21:20', '23:00', 'TERÇA', null, 'Banco de Dados', 1, 1),
-  ];
-
-  late List<Reserva> reservasExibidas = [];
-
-  List<Reserva> _listarReservasPorSala(int salaId) {
-    return reservas.where((reserva) => reserva.salaId == salaId).toList();
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    reservasExibidas =
-        widget.salaId == null || widget.salaId!.isEmpty
-            ? reservas
-            : _listarReservasPorSala(int.parse(widget.salaId!));
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -47,55 +26,68 @@ class _ReservasViewState extends State<ReservasView> {
           onPressed: () => context.go(AppRouter.listaSalas),
         ),
       ),
-      body: ListView.builder(
-        itemCount: reservasExibidas.length,
-        itemBuilder: (context, index) {
-          final reserva = reservasExibidas[index];
-          return Center(
-            child: ConstrainedBox(
-              constraints: BoxConstraints(maxWidth: 1200.0),
-              child: Card(
-                margin: EdgeInsets.symmetric(vertical: 6.0, horizontal: 8.0),
-                elevation: 2,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: ListTile(
-                  contentPadding: EdgeInsets.symmetric(
-                    horizontal: 16.0,
-                    vertical: 8.0,
-                  ),
-                  title: Text(
-                    '${reserva.diaSemana ?? reserva.data} [${reserva.inicio} - ${reserva.fim}]',
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  subtitle: Text(reserva.curso),
-                  trailing: Wrap(
-                    spacing: 8,
-                    children: [
-                      IconButton(
-                        icon: Icon(Icons.edit),
-                        tooltip: 'Editar',
-                        onPressed:
-                            () => context.go(
-                              AppRouter.editarReservas.replaceAll(
-                                ':id',
-                                index.toString(),
-                              ),
-                            ),
+      body: Consumer<ReservaViewModel>(
+        builder: (context, reservaViewmodel, child) {
+          var reservas =
+              widget.salaId == null
+                  ? reservaViewmodel.getListaReservas
+                  : reservaViewmodel.getListaReservasPorSala(
+                    int.parse(widget.salaId!),
+                  );
+          return ListView.builder(
+            itemCount: reservas.length,
+            itemBuilder: (context, index) {
+              final reserva = reservas[index];
+              return Center(
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(maxWidth: 1200.0),
+                  child: Card(
+                    margin: EdgeInsets.symmetric(
+                      vertical: 6.0,
+                      horizontal: 8.0,
+                    ),
+                    elevation: 2,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: ListTile(
+                      contentPadding: EdgeInsets.symmetric(
+                        horizontal: 16.0,
+                        vertical: 8.0,
                       ),
-                      IconButton(
-                        icon: Icon(Icons.delete),
-                        tooltip: 'Excluir',
-                        onPressed: () {
-                          context.go(AppRouter.listaSalas);
-                        },
+                      title: Text(
+                        '${reserva.diaSemana?.getNome ?? reserva.data} [${reserva.inicio} - ${reserva.fim}]',
+                        style: TextStyle(fontWeight: FontWeight.bold),
                       ),
-                    ],
+                      subtitle: Text(reserva.curso),
+                      trailing: Wrap(
+                        spacing: 8,
+                        children: [
+                          IconButton(
+                            icon: Icon(Icons.edit),
+                            tooltip: 'Editar',
+                            onPressed:
+                                () => context.go(
+                                  AppRouter.editarReservas.replaceAll(
+                                    ':id',
+                                    reserva.id.toString(),
+                                  ),
+                                ),
+                          ),
+                          IconButton(
+                            icon: Icon(Icons.delete),
+                            tooltip: 'Excluir',
+                            onPressed: () {
+                              context.go(AppRouter.listaSalas);
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
                 ),
-              ),
-            ),
+              );
+            },
           );
         },
       ),

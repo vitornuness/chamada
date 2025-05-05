@@ -2,7 +2,40 @@ import 'package:chamada/data/model/registro.dart';
 import 'package:flutter/material.dart';
 
 class RegistroViewModel extends ChangeNotifier {
-  final List<Registro> _listaRegistros = [];
+  final List<Registro> _listaRegistros = [
+    Registro(
+      id: 1,
+      alunoId: 1,
+      reservaId: 1,
+      data: DateTime.now().toString(),
+      situacao: 'PENDENTE',
+      tempo: '00:00',
+    ),
+    Registro(
+      id: 2,
+      alunoId: 1,
+      reservaId: 2,
+      data: DateTime.now().toString(),
+      situacao: 'PENDENTE',
+      tempo: '00:00',
+    ),
+    Registro(
+      id: 3,
+      alunoId: 1,
+      reservaId: 3,
+      data: DateTime.now().toString(),
+      situacao: 'PENDENTE',
+      tempo: '00:00',
+    ),
+    Registro(
+      id: 4,
+      alunoId: 1,
+      reservaId: 4,
+      data: DateTime.now().toString(),
+      situacao: 'PENDENTE',
+      tempo: '00:00',
+    ),
+  ];
 
   List<Registro> get getListaRegistros => _listaRegistros;
 
@@ -17,11 +50,7 @@ class RegistroViewModel extends ChangeNotifier {
 
   List<Registro> getRegistrosAtuaisByReserva(int reservaId) {
     return _listaRegistros
-        .where(
-          (r) =>
-              DateTime.parse(r.data) == DateTime.now() &&
-              r.reservaId == reservaId,
-        )
+        .where((r) => r.situacao == 'PENDENTE' && r.reservaId == reservaId)
         .toList();
   }
 
@@ -29,7 +58,8 @@ class RegistroViewModel extends ChangeNotifier {
     return _listaRegistros
         .where(
           (r) =>
-              DateTime.parse(r.data) == DateTime.now() && r.alunoId == alunoId,
+              DateTime.parse(r.data).day == DateTime.now().day &&
+              r.alunoId == alunoId,
         )
         .toList();
   }
