@@ -1,5 +1,6 @@
-class Aluno {
-  final int id;
+import 'package:chamada/data/model/model.dart';
+
+class Aluno extends Model<Aluno> {
   final String codigoRegistro;
   final String nome;
   final int turmaId;
@@ -7,7 +8,7 @@ class Aluno {
   final String? aparelho;
 
   Aluno({
-    required this.id,
+    required super.id,
     required this.codigoRegistro,
     required this.nome,
     required this.turmaId,
@@ -15,6 +16,30 @@ class Aluno {
     this.aparelho,
   });
 
+  @override
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'codigoRegistro': codigoRegistro,
+      'nome': nome,
+      'turmaId': turmaId,
+      'usuarioId': usuarioId,
+      'aparelho': aparelho,
+    };
+  }
+
+  static Aluno fromMap(Map<String, dynamic> map) {
+    return Aluno(
+      id: map['id'],
+      codigoRegistro: map['codigoRegistro'],
+      nome: map['nome'],
+      turmaId: map['turmaId'],
+      usuarioId: map['usuarioId'],
+      aparelho: map['aparelho'],
+    );
+  }
+
+  @override
   Aluno copyWith({
     int? id,
     String? codigoRegistro,

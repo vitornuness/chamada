@@ -1,3 +1,4 @@
+import 'package:chamada/data/service/preferences_service.dart';
 import 'package:chamada/ui/viewmodel/aluno_view_model.dart';
 import 'package:chamada/ui/viewmodel/auth_view_model.dart';
 import 'package:chamada/ui/viewmodel/justificativa_view_model.dart';
@@ -9,7 +10,11 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:chamada/router.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  await PreferencesService.init();
+
   runApp(
     MultiProvider(
       providers: [
