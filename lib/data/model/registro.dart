@@ -1,5 +1,6 @@
-class Registro {
-  final int id;
+import 'package:chamada/data/model/model.dart';
+
+class Registro extends Model<Registro> {
   final int alunoId;
   final int reservaId;
   final String data;
@@ -7,7 +8,7 @@ class Registro {
   final String tempo;
 
   Registro({
-    required this.id,
+    required super.id,
     required this.alunoId,
     required this.reservaId,
     required this.data,
@@ -15,6 +16,30 @@ class Registro {
     required this.tempo,
   });
 
+  @override
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'alunoId': alunoId,
+      'reservaId': reservaId,
+      'data': data,
+      'situacao': situacao,
+      'tempo': tempo,
+    };
+  }
+
+  static Registro fromMap(Map<String, dynamic> map) {
+    return Registro(
+      id: map['id'],
+      alunoId: map['alunoId'],
+      reservaId: map['reservaId'],
+      data: map['data'],
+      situacao: map['situacao'],
+      tempo: map['tempo'],
+    );
+  }
+
+  @override
   Registro copyWith({
     int? id,
     int? alunoId,

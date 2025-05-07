@@ -1,7 +1,9 @@
 import 'package:chamada/data/model/usuario.dart';
+import 'package:chamada/data/service/preferences_service.dart';
 import 'package:flutter/material.dart';
 
 class AuthViewModel extends ChangeNotifier {
+  final _preferencesService = PreferencesService.instance;
   final List<Usuario> _listaUsuarios = [
     Usuario(
       id: 1,
@@ -28,7 +30,12 @@ class AuthViewModel extends ChangeNotifier {
   Usuario? _usuarioAutenticado;
 
   List<Usuario> get getListaUsuarios => _listaUsuarios;
-  Usuario? get getUsuarioAutenticado => _usuarioAutenticado;
+  Usuario? get getUsuarioAutenticado {
+    return _usuarioAutenticado ??
+        _listaUsuarios
+            .where((u) => u.id == (_preferencesService.getTokenUsuario()))
+            .firstOrNull;
+  }
 
   Future<bool> login(String usuario, String senha) async {
     if (usuario.isEmpty || senha.length < 5) {
@@ -39,6 +46,10 @@ class AuthViewModel extends ChangeNotifier {
         _listaUsuarios
             .where((u) => u.usuario == usuario && u.senha == senha)
             .firstOrNull;
+
+    if (_usuarioAutenticado != null) {
+      _preferencesService.setTokenUsuario(_usuarioAutenticado!.id);
+    }
 
     return _usuarioAutenticado != null;
   }

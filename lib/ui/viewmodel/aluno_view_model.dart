@@ -1,7 +1,9 @@
 import 'package:chamada/data/model/aluno.dart';
+import 'package:chamada/data/service/preferences_service.dart';
 import 'package:flutter/material.dart';
 
 class AlunoViewModel extends ChangeNotifier {
+  final _preferencesService = PreferencesService.instance;
   final List<Aluno> _listaAlunos = [
     Aluno(
       id: 1,
@@ -22,7 +24,10 @@ class AlunoViewModel extends ChangeNotifier {
   Aluno? _alunoAutenticado;
 
   List<Aluno> get getListaAlunos => _listaAlunos;
-  Aluno? get getAlunoAutenticado => _alunoAutenticado;
+  Aluno? get getAlunoAutenticado {
+    return _alunoAutenticado ??
+        findAlunoByUsuario(_preferencesService.getTokenUsuario() ?? 0);
+  }
 
   void adicionarAluno(Aluno aluno) {
     if (findAluno(aluno.id) != null) {

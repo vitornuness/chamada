@@ -1,7 +1,7 @@
+import 'package:chamada/data/model/model.dart';
 import 'package:chamada/shared/dia_semana_enum.dart';
 
-class Reserva {
-  final int id;
+class Reserva extends Model<Reserva> {
   final String inicio;
   final String fim;
   final String curso;
@@ -12,7 +12,7 @@ class Reserva {
   final String? data;
 
   Reserva({
-    required this.id,
+    required super.id,
     required this.inicio,
     required this.fim,
     required this.curso,
@@ -23,6 +23,36 @@ class Reserva {
     this.data,
   });
 
+  @override
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'inicio': inicio,
+      'fim': fim,
+      'curso': curso,
+      'salaId': salaId,
+      'turmaId': turmaId,
+      'usuarioId': usuarioId,
+      'diaSemana': diaSemana,
+      'data': data,
+    };
+  }
+
+  static Reserva fromMap(Map<String, dynamic> map) {
+    return Reserva(
+      id: map['id'],
+      inicio: map['inicio'],
+      fim: map['fim'],
+      curso: map['curso'],
+      salaId: map['salaId'],
+      turmaId: map['turmaId'],
+      usuarioId: map['usuarioId'],
+      diaSemana: map['diaSemana'],
+      data: map['data'],
+    );
+  }
+
+  @override
   Reserva copyWith({
     int? id,
     String? inicio,
