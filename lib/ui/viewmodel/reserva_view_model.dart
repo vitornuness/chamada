@@ -69,7 +69,7 @@ class ReservaViewModel extends ChangeNotifier {
   List<Reserva> get getListaReservas => _listaReservas;
 
   void adicionarReserva(Reserva reserva) {
-    if (findReserva(reserva.id) != null) {
+    if (findReserva(reserva.id!) != null) {
       return;
     }
 

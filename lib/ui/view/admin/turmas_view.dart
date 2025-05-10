@@ -1,18 +1,85 @@
 import 'package:chamada/data/model/turma.dart';
 import 'package:chamada/router.dart';
+import 'package:chamada/ui/components/turma/formulario_turma.dart';
 import 'package:chamada/ui/viewmodel/turma_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
-class ListaTurmasView extends StatefulWidget {
-  const ListaTurmasView({super.key});
+class TurmasView extends StatefulWidget {
+  const TurmasView({super.key});
 
   @override
-  State<ListaTurmasView> createState() => _ListaTurmasViewState();
+  State<TurmasView> createState() => _TurmasViewState();
 }
 
-class _ListaTurmasViewState extends State<ListaTurmasView> {
+class _TurmasViewState extends State<TurmasView> {
+  void _abrirFormulario(Turma? turmaParaEditar) async {
+    showModalBottomSheet(
+      context: context,
+      builder: (context) {
+        return FormularioTurma(
+          turma: turmaParaEditar,
+          onSave: (novaTurma) async {
+            final sucesso =
+                novaTurma.id == null
+                    ? await context.read<TurmaViewModel>().adicionarTurma(
+                      novaTurma,
+                    )
+                    : await context.read<TurmaViewModel>().atualizarTurma(
+                      novaTurma.id!,
+                      novaTurma,
+                    );
+
+            if (!mounted) return;
+
+            if (sucesso) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Turma salva com sucesso')),
+              );
+              Navigator.of(context).pop();
+            } else {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Erro ao salvar turma')),
+              );
+            }
+          },
+        );
+      },
+    );
+  }
+
+  void _alertaConfirmarRemocao(int id) async {
+    if (!mounted) return;
+
+    bool? confirmado = await showDialog<bool>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Confirmar Remoção'),
+          content: const Text('Tem certeza que deseja remover esta turma?'),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(false),
+              child: const Text('Cancelar'),
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(true),
+              child: const Text('Remover'),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (confirmado == true) {
+      await context.read<TurmaViewModel>().removerTurma(id);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Turma com ID $id removida com sucesso.')),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -56,16 +123,14 @@ class _ListaTurmasViewState extends State<ListaTurmasView> {
                         spacing: 8,
                         children: [
                           IconButton(
+                            icon: Icon(Icons.delete),
+                            tooltip: 'Remover',
+                            onPressed: () => _alertaConfirmarRemocao(turma.id!),
+                          ),
+                          IconButton(
                             icon: Icon(Icons.edit),
                             tooltip: 'Editar',
-                            onPressed: () {
-                              context.go(
-                                AppRouter.editarTurmas.replaceAll(
-                                  ':id',
-                                  turma.id.toString(),
-                                ),
-                              );
-                            },
+                            onPressed: () => _abrirFormulario(turma),
                           ),
                           IconButton(
                             icon: Icon(Icons.group),
@@ -97,7 +162,7 @@ class _ListaTurmasViewState extends State<ListaTurmasView> {
       ),
 
       floatingActionButton: FloatingActionButton(
-        onPressed: () => context.go(AppRouter.cadastrarTurmas),
+        onPressed: () => _abrirFormulario(null),
         child: const Icon(Icons.add),
       ),
     );

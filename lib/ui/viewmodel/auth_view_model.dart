@@ -30,11 +30,29 @@ class AuthViewModel extends ChangeNotifier {
   Usuario? _usuarioAutenticado;
 
   List<Usuario> get getListaUsuarios => _listaUsuarios;
+
   Usuario? get getUsuarioAutenticado {
     return _usuarioAutenticado ??
         _listaUsuarios
             .where((u) => u.id == (_preferencesService.getTokenUsuario()))
             .firstOrNull;
+  }
+
+  Future<bool> adicionarUsuario(Usuario novoUsuario) async {
+    if (await findUsuario(novoUsuario.id!) != null) {
+      return false;
+    }
+
+    novoUsuario = novoUsuario.copyWith(
+      id: getId(),
+      usuario: novoUsuario.usuario,
+      senha: novoUsuario.senha,
+      nome: novoUsuario.nome,
+      ehAdmin: novoUsuario.ehAdmin,
+    );
+    _listaUsuarios.add(novoUsuario);
+    notifyListeners();
+    return true;
   }
 
   Future<bool> login(String usuario, String senha) async {
@@ -48,9 +66,26 @@ class AuthViewModel extends ChangeNotifier {
             .firstOrNull;
 
     if (_usuarioAutenticado != null) {
-      _preferencesService.setTokenUsuario(_usuarioAutenticado!.id);
+      _preferencesService.setTokenUsuario(_usuarioAutenticado!.id!);
     }
 
     return _usuarioAutenticado != null;
+  }
+
+  Future<Usuario?> findUsuario(int id) async {
+    return _listaUsuarios.where((u) => u.id == id).firstOrNull;
+  }
+
+  int getId() {
+    int id = 1;
+    if (_listaUsuarios.isEmpty) return id;
+
+    for (var s in _listaUsuarios) {
+      if (s.id! >= id) {
+        id = s.id! + 1;
+      }
+    }
+
+    return id;
   }
 }

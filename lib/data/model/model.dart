@@ -1,7 +1,7 @@
 abstract class Model<T> {
-  final int id;
+  final int? id;
 
-  Model({required this.id});
+  Model({this.id});
 
   T copyWith();
   Map<String, dynamic> toMap();

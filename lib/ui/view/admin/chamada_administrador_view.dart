@@ -1,38 +1,45 @@
 import 'package:chamada/router.dart';
-import 'package:chamada/ui/viewmodel/sala_view_model.dart';
+import 'package:chamada/ui/viewmodel/aluno_view_model.dart';
+import 'package:chamada/ui/viewmodel/registro_view_model.dart';
+import 'package:chamada/ui/viewmodel/reserva_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
-class ListaSalasView extends StatefulWidget {
-  const ListaSalasView({super.key});
+class ChamadaAdministradorView extends StatelessWidget {
+  final String turmaId;
 
-  @override
-  State<ListaSalasView> createState() => _ListaSalasViewState();
-}
+  const ChamadaAdministradorView(this.turmaId, {super.key});
 
-class _ListaSalasViewState extends State<ListaSalasView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Salas'),
+        title: const Text('Chamada'),
         centerTitle: true,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
-          onPressed:
-              () =>
-                  context.canPop()
-                      ? context.pop()
-                      : context.go(AppRouter.painelAdmin),
+          tooltip: 'Voltar para lista de turmas',
+          onPressed: () => context.go(AppRouter.listaTurmas),
         ),
       ),
-      body: Consumer<SalaViewModel>(
-        builder: (context, salaViewModel, child) {
+      body: Consumer<RegistroViewModel>(
+        builder: (context, registroViewModel, child) {
+          final reserva = context
+              .read<ReservaViewModel>()
+              .getListaReservasDoDiaPorTurma(int.parse(turmaId));
           return ListView.builder(
-            itemCount: salaViewModel.getListaSalas.length,
+            itemCount:
+                registroViewModel
+                    .getRegistrosAtuaisByReserva(reserva[0].id!)
+                    .length,
             itemBuilder: (context, index) {
-              final sala = salaViewModel.getListaSalas[index];
+              final registro =
+                  registroViewModel.getRegistrosAtuaisByReserva(
+                    reserva[0].id!,
+                  )[index];
+              final aluno =
+                  context.read<AlunoViewModel>().findAluno(registro.alunoId)!;
               return Center(
                 child: ConstrainedBox(
                   constraints: BoxConstraints(maxWidth: 1200.0),
@@ -51,30 +58,25 @@ class _ListaSalasViewState extends State<ListaSalasView> {
                         vertical: 8.0,
                       ),
                       title: Text(
-                        'Sala ${sala.codigo}',
+                        aluno.nome,
                         style: TextStyle(fontWeight: FontWeight.bold),
                       ),
+                      subtitle: Text(aluno.codigoRegistro),
                       trailing: Wrap(
                         spacing: 8,
                         children: [
                           IconButton(
-                            icon: Icon(Icons.edit),
-                            tooltip: 'Editar',
-                            onPressed:
-                                () => context.go(
-                                  AppRouter.editarSalas.replaceAll(
-                                    ':id',
-                                    sala.id.toString(),
-                                  ),
-                                ),
+                            icon: Icon(Icons.check),
+                            tooltip: 'Marcar presença',
+                            onPressed: () {
+                              // TODO
+                            },
                           ),
                           IconButton(
-                            icon: Icon(Icons.alarm),
-                            tooltip: 'Reservas',
+                            icon: Icon(Icons.close),
+                            tooltip: 'Marcar falta',
                             onPressed: () {
-                              context.go(
-                                '${AppRouter.reservas}?salaId=${sala.id}',
-                              );
+                              // TODO
                             },
                           ),
                         ],
@@ -86,10 +88,6 @@ class _ListaSalasViewState extends State<ListaSalasView> {
             },
           );
         },
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => context.go(AppRouter.cadastrarSalas),
-        child: const Icon(Icons.add),
       ),
     );
   }

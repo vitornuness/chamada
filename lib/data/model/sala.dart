@@ -4,7 +4,7 @@ class Sala extends Model<Sala> {
   final String codigo;
   final String? ipAparelho;
 
-  Sala({required super.id, required this.codigo, this.ipAparelho});
+  Sala({super.id, required this.codigo, this.ipAparelho});
 
   @override
   Map<String, dynamic> toMap() {

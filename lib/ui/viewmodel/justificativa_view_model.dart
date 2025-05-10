@@ -9,7 +9,7 @@ class JustificativaViewModel extends ChangeNotifier {
   )..sort((a, b) => DateTime.parse(b.data).compareTo(DateTime.parse(a.data)));
 
   void adicionarJustificativa(Justificativa justificativa) {
-    if (findJustificativa(justificativa.id) != null) {
+    if (findJustificativa(justificativa.id!) != null) {
       return;
     }
 
