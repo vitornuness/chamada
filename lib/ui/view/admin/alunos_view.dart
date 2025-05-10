@@ -1,19 +1,87 @@
+import 'package:chamada/data/model/aluno.dart';
 import 'package:chamada/router.dart';
+import 'package:chamada/ui/components/aluno/formulario_aluno.dart';
 import 'package:chamada/ui/viewmodel/aluno_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
-class ListaAlunosView extends StatefulWidget {
+class AlunosView extends StatefulWidget {
   final String? turmaId;
 
-  const ListaAlunosView(this.turmaId, {super.key});
+  const AlunosView(this.turmaId, {super.key});
 
   @override
-  State<ListaAlunosView> createState() => _ListaAlunosViewState();
+  State<AlunosView> createState() => _AlunosViewState();
 }
 
-class _ListaAlunosViewState extends State<ListaAlunosView> {
+class _AlunosViewState extends State<AlunosView> {
+  void _abrirFormulario(Aluno? alunoParaEditar) async {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      builder: (context) {
+        return FormularioAluno(
+          aluno: alunoParaEditar,
+          onSave: (novoAluno) async {
+            final sucesso =
+                novoAluno.id == null
+                    ? await context.read<AlunoViewModel>().adicionarAluno(
+                      novoAluno,
+                    )
+                    : await context.read<AlunoViewModel>().atualizarAluno(
+                      novoAluno.id!,
+                      novoAluno,
+                    );
+
+            if (!mounted) return;
+
+            if (sucesso) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Aluno salvo com sucesso')),
+              );
+              Navigator.of(context).pop();
+            } else {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Erro ao salvar aluno')),
+              );
+            }
+          },
+        );
+      },
+    );
+  }
+
+  void _alertaConfirmarRemocao(int id) async {
+    if (!mounted) return;
+
+    bool? confirmado = await showDialog<bool>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Confirmar Remoção'),
+          content: const Text('Tem certeza que deseja remover este aluno?'),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(false),
+              child: const Text('Cancelar'),
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(true),
+              child: const Text('Remover'),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (confirmado == true) {
+      await context.read<AlunoViewModel>().removerAluno(id);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Aluno com ID $id removido com sucesso.')),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -64,14 +132,12 @@ class _ListaAlunosViewState extends State<ListaAlunosView> {
                           IconButton(
                             icon: Icon(Icons.edit),
                             tooltip: 'Editar',
-                            onPressed: () => context.go(AppRouter.listaTurmas),
+                            onPressed: () => _abrirFormulario(aluno),
                           ),
                           IconButton(
                             icon: Icon(Icons.delete),
                             tooltip: 'Excluir',
-                            onPressed: () {
-                              context.go(AppRouter.listaTurmas);
-                            },
+                            onPressed: () => _alertaConfirmarRemocao(aluno.id!),
                           ),
                         ],
                       ),
@@ -84,7 +150,7 @@ class _ListaAlunosViewState extends State<ListaAlunosView> {
         },
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => context.go(AppRouter.cadastrarAlunos),
+        onPressed: () => _abrirFormulario(null),
         child: const Icon(Icons.add),
       ),
     );

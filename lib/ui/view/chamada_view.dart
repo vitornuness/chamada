@@ -53,7 +53,7 @@ class _ChamadaViewState extends State<ChamadaView> {
           body: Consumer<RegistroViewModel>(
             builder: (context, registroViewModel, child) {
               final registrosAtuais = registroViewModel
-                  .getRegistrosAtuaisByAluno(aluno.id);
+                  .getRegistrosAtuaisByAluno(aluno.id!);
               return Center(
                 child: ConstrainedBox(
                   constraints: BoxConstraints(

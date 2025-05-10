@@ -29,13 +29,32 @@ class AlunoViewModel extends ChangeNotifier {
         findAlunoByUsuario(_preferencesService.getTokenUsuario() ?? 0);
   }
 
-  void adicionarAluno(Aluno aluno) {
-    if (findAluno(aluno.id) != null) {
-      return;
+  Future<bool> adicionarAluno(Aluno aluno) async {
+    if (findAluno(aluno.id!) != null) {
+      return false;
     }
 
+    aluno = aluno.copyWith(
+      id: getId(),
+      codigoRegistro: aluno.codigoRegistro,
+      nome: aluno.nome,
+      turmaId: aluno.turmaId,
+      usuarioId: aluno.usuarioId,
+      aparelho: aluno.aparelho,
+    );
     _listaAlunos.add(aluno);
     notifyListeners();
+    return true;
+  }
+
+  Future<bool> atualizarAluno(int id, Aluno novoAluno) async {
+    int? indexParaEditar = _listaAlunos.indexWhere((s) => s.id == id);
+
+    if (indexParaEditar == -1) return false;
+
+    _listaAlunos[indexParaEditar] = novoAluno;
+    notifyListeners();
+    return true;
   }
 
   void autenticarAluno(int usuarioId) {
@@ -60,11 +79,24 @@ class AlunoViewModel extends ChangeNotifier {
     return _listaAlunos.where((a) => a.turmaId == turmaId).toList();
   }
 
+  int getId() {
+    int id = 1;
+    if (_listaAlunos.isEmpty) return id;
+
+    for (var s in _listaAlunos) {
+      if (s.id! >= id) {
+        id = s.id! + 1;
+      }
+    }
+
+    return id;
+  }
+
   bool possuiAparelhoCadastrado() {
     return _alunoAutenticado?.aparelho != null;
   }
 
-  void removerAluno(int id) {
+  Future<void> removerAluno(int id) async {
     _listaAlunos.removeWhere((a) => a.id == id);
     notifyListeners();
   }

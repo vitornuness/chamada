@@ -42,7 +42,7 @@ class _AuthViewState extends State<AuthView> {
           var usuarioAutenticado =
               context.read<AuthViewModel>().getUsuarioAutenticado;
           context.read<AlunoViewModel>().autenticarAluno(
-            usuarioAutenticado!.id,
+            usuarioAutenticado!.id!,
           );
           context.go(AppRouter.chamada);
         } else {

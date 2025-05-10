@@ -1,15 +1,11 @@
-import 'package:chamada/ui/view/admin/alunos/cadastrar_alunos_view.dart';
-import 'package:chamada/ui/view/admin/alunos/lista_alunos_view.dart';
-import 'package:chamada/ui/view/admin/turmas/chamada_administrador_view.dart';
+import 'package:chamada/ui/view/admin/alunos_view.dart';
+import 'package:chamada/ui/view/admin/chamada_administrador_view.dart';
 import 'package:chamada/ui/view/admin/justificativas_administrador_view.dart';
 import 'package:chamada/ui/view/admin/painel_administrador_view.dart';
 import 'package:chamada/ui/view/admin/reservas/formulario_reservas_view.dart';
-import 'package:chamada/ui/view/admin/salas/formulario_salas_view.dart';
 import 'package:chamada/ui/view/admin/reservas/reservas_view.dart';
-import 'package:chamada/ui/view/admin/salas/lista_salas_view.dart';
-import 'package:chamada/ui/view/admin/turmas/cadastrar_turmas_view.dart';
-import 'package:chamada/ui/view/admin/turmas/editar_turmas_view.dart';
-import 'package:chamada/ui/view/admin/turmas/lista_turmas_view.dart';
+import 'package:chamada/ui/view/admin/salas_view.dart';
+import 'package:chamada/ui/view/admin/turmas_view.dart';
 import 'package:chamada/ui/view/cadastrar_aparelho_view.dart';
 import 'package:chamada/ui/view/justificativa_view.dart';
 import 'package:chamada/ui/viewmodel/auth_view_model.dart';
@@ -30,16 +26,11 @@ class AppRouter {
   static const String painelAdmin = '/admin/painel';
   static const String chamadaAdmin = '/admin/chamada';
   static const String justificativasAdmin = '/admin/justificativas';
-  static const String cadastrarAlunos = '/admin/alunos/cadastro';
   static const String listaAlunos = '/admin/alunos';
   static const String cadastrarReservas = '/admin/reservas/cadastro';
   static const String editarReservas = '/admin/reservas/:id/editar';
   static const String reservas = '/admin/reservas';
-  static const String cadastrarSalas = '/admin/salas/cadastro';
-  static const String editarSalas = '/admin/salas/:id/editar';
   static const String listaSalas = '/admin/salas';
-  static const String cadastrarTurmas = '/admin/turmas/cadastro';
-  static const String editarTurmas = '/admin/turmas/:id/editar';
   static const String listaTurmas = '/admin/turmas';
 
   static final GoRouter router = GoRouter(
@@ -60,14 +51,10 @@ class AppRouter {
         builder: (context, state) => CadastrarAparelhoView(),
       ),
       GoRoute(
-        path: AppRouter.cadastrarAlunos,
-        builder: (context, state) => CadastrarAlunosView(),
-      ),
-      GoRoute(
         path: AppRouter.listaAlunos,
         builder:
             (context, state) =>
-                ListaAlunosView(state.uri.queryParameters['turmaId']),
+                AlunosView(state.uri.queryParameters['turmaId']),
       ),
       GoRoute(
         path: AppRouter.cadastrarReservas,
@@ -86,31 +73,12 @@ class AppRouter {
                 ReservasView(state.uri.queryParameters['salaId']),
       ),
       GoRoute(
-        path: AppRouter.cadastrarSalas,
-        builder: (context, state) => FormularioSalasView(null),
-      ),
-      GoRoute(
-        path: AppRouter.editarSalas,
-        builder:
-            (context, state) =>
-                FormularioSalasView(state.pathParameters['id']!),
-      ),
-      GoRoute(
         path: AppRouter.listaSalas,
-        builder: (context, state) => ListaSalasView(),
-      ),
-      GoRoute(
-        path: AppRouter.cadastrarTurmas,
-        builder: (context, state) => CadastrarTurmasView(),
-      ),
-      GoRoute(
-        path: AppRouter.editarTurmas,
-        builder:
-            (context, state) => EditarTurmasView(state.pathParameters['id']!),
+        builder: (context, state) => SalasView(),
       ),
       GoRoute(
         path: AppRouter.listaTurmas,
-        builder: (context, state) => ListaTurmasView(),
+        builder: (context, state) => TurmasView(),
       ),
       GoRoute(
         path: AppRouter.painelAdmin,
@@ -138,13 +106,8 @@ class AppRouter {
         AppRouter.painelAdmin,
         AppRouter.chamadaAdmin,
         AppRouter.justificativasAdmin,
-        AppRouter.cadastrarAlunos,
         AppRouter.listaAlunos,
-        AppRouter.cadastrarSalas,
-        AppRouter.editarSalas,
         AppRouter.listaSalas,
-        AppRouter.cadastrarTurmas,
-        AppRouter.editarTurmas,
         AppRouter.listaTurmas,
       ];
 
