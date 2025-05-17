@@ -4,6 +4,7 @@ class PreferencesService {
   static PreferencesService? _instace;
   static SharedPreferences? _preferences;
 
+  static const String _tokenIdentificacao = 'token';
   static const String _tokenUsuario = 'token_usuario';
 
   PreferencesService._internal();
@@ -15,6 +16,14 @@ class PreferencesService {
 
   static Future<void> init() async {
     _preferences = await SharedPreferences.getInstance();
+  }
+
+  Future<bool> setTokenIdentificacao(String token) async {
+    return await _preferences?.setString(_tokenIdentificacao, token) ?? false;
+  }
+
+  String? getTokenIdentificacao() {
+    return _preferences?.getString(_tokenIdentificacao);
   }
 
   Future<bool> setTokenUsuario(int token) async {
