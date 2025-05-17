@@ -18,4 +18,31 @@ class ChamadaApi extends Api {
       rethrow;
     }
   }
+
+  Future<void> enviarTokenSala(
+    int alunoId,
+    int reservaId,
+    String tokenSala,
+    int timestamp,
+  ) async {
+    final uri = 'v1/chamada/registrar';
+
+    try {
+      final response = await post(
+        uri,
+        jsonEncode({
+          'idAluno': alunoId,
+          'idHorario': reservaId,
+          'tokenSala': tokenSala,
+          'timestamp': timestamp,
+        }),
+      );
+
+      if (response.statusCode != 200) {
+        throw Exception(response.body);
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
 }

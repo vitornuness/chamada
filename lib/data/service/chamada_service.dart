@@ -13,4 +13,24 @@ class ChamadaService {
       rethrow;
     }
   }
+
+  Future<bool> enviarTokenSala(
+    int alunoId,
+    int reservaId,
+    String tokenSala,
+    int timestamp,
+  ) async {
+    try {
+      await _chamadaApi.enviarTokenSala(
+        alunoId,
+        reservaId,
+        tokenSala,
+        timestamp,
+      );
+
+      return true;
+    } catch (e) {
+      rethrow;
+    }
+  }
 }
