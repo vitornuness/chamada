@@ -1,34 +1,23 @@
+import 'package:chamada/bloc/autenticacao/autenticacao_bloc.dart';
+import 'package:chamada/bloc/autenticacao/event/checar_autenticacao.dart';
+import 'package:chamada/bloc/autenticacao/state/autenticacao_autenticado.dart';
+import 'package:chamada/bloc/autenticacao/state/autenticacao_inicial.dart';
+import 'package:chamada/bloc/autenticacao/state/autenticacao_state.dart';
+import 'package:chamada/data/repository/usuario_repository.dart';
 import 'package:chamada/data/service/preferences_service.dart';
-import 'package:chamada/ui/viewmodel/aluno_view_model.dart';
-import 'package:chamada/ui/viewmodel/auth_view_model.dart';
-import 'package:chamada/ui/viewmodel/justificativa_view_model.dart';
-import 'package:chamada/ui/viewmodel/registro_view_model.dart';
-import 'package:chamada/ui/viewmodel/reserva_view_model.dart';
-import 'package:chamada/ui/viewmodel/sala_view_model.dart';
-import 'package:chamada/ui/viewmodel/turma_view_model.dart';
+import 'package:chamada/ui/view/auth_view.dart';
+import 'package:chamada/ui/view/chamada_view.dart';
+import 'package:chamada/ui/view/splash_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:chamada/router.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await PreferencesService.init();
 
-  runApp(
-    MultiProvider(
-      providers: [
-        ChangeNotifierProvider(create: (context) => AuthViewModel()),
-        ChangeNotifierProvider(create: (context) => AlunoViewModel()),
-        ChangeNotifierProvider(create: (context) => JustificativaViewModel()),
-        ChangeNotifierProvider(create: (context) => RegistroViewModel()),
-        ChangeNotifierProvider(create: (context) => ReservaViewModel()),
-        ChangeNotifierProvider(create: (context) => SalaViewModel()),
-        ChangeNotifierProvider(create: (context) => TurmaViewModel()),
-      ],
-      child: MainApp(),
-    ),
-  );
+  runApp(MainApp());
 }
 
 class MainApp extends StatelessWidget {
@@ -36,9 +25,36 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp.router(
-      routerConfig: AppRouter.router,
-      debugShowCheckedModeBanner: false,
+    return MultiRepositoryProvider(
+      providers: [RepositoryProvider(create: (context) => UsuarioRepository())],
+      child: MultiBlocProvider(
+        providers: [
+          BlocProvider(
+            create:
+                (context) => AutenticacaoBloc(
+                  usuarioRepository: context.read<UsuarioRepository>(),
+                )..add(ChecarAutenticacao()),
+          ),
+        ],
+        child: MaterialApp(
+          home: BlocBuilder<AutenticacaoBloc, AutenticacaoState>(
+            builder: (context, state) {
+              if (state is AutenticacaoInicial) {
+                return SplashScreen();
+              } else if (state is AutenticacaoAutenticado) {
+                return ChamadaView();
+              } else {
+                return AuthView();
+              }
+            },
+          ),
+          routes: {
+            AppRouter.login: (context) => AuthView(),
+            AppRouter.chamada: (context) => ChamadaView(),
+          },
+          debugShowCheckedModeBanner: false,
+        ),
+      ),
     );
   }
 }
